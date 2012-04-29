@@ -7,15 +7,15 @@
 	[] (load-ontology "http://www.co-ode.org/ontologies/pizza/pizza.owl"))
 
 (deftest load-pizza-owl
-  (is true (load-pizza)))
+  (is (load-pizza)))
 
 (deftest load-then-remove-pizza-owl
-  (is true (remove-ontology! (load-pizza))))
+  (is (not (remove-ontology! (load-pizza)))))
 
 (deftest save-pizza
   (def file (doto (File/createTempFile "pizza" ".owl") (.delete) (.deleteOnExit)))
-  (is false (.exists file))
+  (is (not (.exists file)))
   (save-ontology (load-pizza) file)
-  (is true (.exists file))
+  (is (.exists file))
 )
 
