@@ -6,6 +6,24 @@
 )
 
 (defn owl-manager [] (OWLManager/createOWLOntologyManager))
+
+(def owl-format
+  ^{:doc "Known ontology formats supported by OWLAPI, ie. subclasses of OWLOntologyFormat" }
+ {
+	:dl-html	uk.ac.manchester.cs.owlapi.dlsyntax.DLSyntaxHTMLOntologyFormat
+	:dl	uk.ac.manchester.cs.owlapi.dlsyntax.DLSyntaxOntologyFormat
+	:krss2	de.uulm.ecs.ai.owlapi.krssparser.KRSS2OntologyFormat
+	:krss	org.coode.owl.krssparser.KRSSOntologyFormat
+	:latex-axioms	org.coode.owlapi.latex.LatexAxiomsListOntologyFormat
+	:latex	org.coode.owlapi.latex.LatexOntologyFormat
+	:obo	org.coode.owlapi.obo.parser.OBOOntologyFormat
+	:manchester	org.coode.owlapi.manchesterowlsyntax.ManchesterOWLSyntaxOntologyFormat
+	:functional	org.semanticweb.owlapi.io.OWLFunctionalSyntaxOntologyFormat
+	:owlxml	org.semanticweb.owlapi.io.OWLXMLOntologyFormat
+	:rdfxml	org.semanticweb.owlapi.io.RDFXMLOntologyFormat
+	:default	org.semanticweb.owlapi.io.DefaultOntologyFormat
+	:turtle	org.coode.owlapi.turtle.TurtleOntologyFormat
+})
 	
 (defn load-ontology 
 	([uri] (load-ontology uri (owl-manager)))
@@ -19,4 +37,14 @@
 
 (defn save-ontology [[ontology manager] file] 
 	(.saveOntology manager ontology (IRI/create (.toURI file))))
+
+(defn ontology-format [[ontology manager]]
+	(.getOntologyFormat manager ontology))
+
+(defn -copy-prefixes [ontology-manager new-format]
+	(let [old-format (ontology-format ontology-manager)]
+		(if (and (.isPrefixOWLOntologyFormat new-format)
+		         (.isPrefixOWLOntologyFormat old-format))
+			(.copyPrefixesFrom new-format old-format))))	
+			
 
