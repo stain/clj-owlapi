@@ -14,8 +14,9 @@
      (ontology-document-uri (load-pizza))))
  
 (deftest formats
-	(is (= org.semanticweb.owlapi.io.RDFXMLOntologyFormat (owl-format :rdfxml)))
-	(is (= org.semanticweb.owlapi.io.OWLXMLOntologyFormat) (owl-format :owlxml)))
+	(is (= (org.semanticweb.owlapi.io.RDFXMLOntologyFormat.) (owl-format :rdfxml)))
+	(is (= (org.semanticweb.owlapi.io.OWLXMLOntologyFormat.) (owl-format :owlxml)))
+)
 
 (deftest load-then-remove-pizza-owl
   (is (not (remove-ontology! (load-pizza)))))
@@ -36,6 +37,6 @@
 
 
 (deftest copy-prefix-owl-turtle
-	(-copy-prefixes (load-pizza) (owl-format :turtle)))
+	(copy-prefixes (load-pizza) (owl-format :turtle)))
 
 

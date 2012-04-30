@@ -33,18 +33,27 @@
 	(.removeOntology manager ontology))
 
 (defn ontology-document-uri [[ontology manager]]
-	(.getOntologyDocumentIRI manager ))
+	(.getOntologyDocumentIRI manager ontology))
 
-(defn save-ontology [[ontology manager] file] 
-	(.saveOntology manager ontology (IRI/create (.toURI file))))
+(defn as-iri [file]
+	(IRI/create (.toURI file)))
 
 (defn ontology-format [[ontology manager]]
 	(.getOntologyFormat manager ontology))
 
-(defn -copy-prefixes [ontology-manager new-format]
+
+(defn copy-prefixes [ontology-manager new-format]
 	(let [old-format (ontology-format ontology-manager)]
 		(if (and (.isPrefixOWLOntologyFormat new-format)
 		         (.isPrefixOWLOntologyFormat old-format))
 			(.copyPrefixesFrom new-format old-format))))	
 			
+
+(defn save-ontology 
+	([[ontology manager] file] 
+		(.saveOntology manager ontology (as-iri file)))
+	([[ontology manager :as ont-man] file save-format]
+		(let [save-format (owl-format save-format)]
+			(copy-prefixes ont-man save-format)
+			(.saveOntology manager ontology (as-iri file)))))
 
