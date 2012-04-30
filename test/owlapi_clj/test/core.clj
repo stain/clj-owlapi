@@ -6,6 +6,12 @@
 (defn load-pizza 
 	[] (load-ontology "http://www.co-ode.org/ontologies/pizza/pizza.owl"))
 
+(defn tempfile [pre post]
+  (doto (File/createTempFile pre post) 
+	(.delete) 
+	(.deleteOnExit)
+))
+
 (deftest load-pizza-owl
   (is (load-pizza)))
 
@@ -22,17 +28,19 @@
   (is (not (remove-ontology! (load-pizza)))))
 
 (deftest save-pizza
-  (def file (doto (File/createTempFile "pizza" ".owl") (.delete) (.deleteOnExit)))
-  (is (not (.exists file)))
-  (save-ontology (load-pizza) file)
-  (is (.exists file))
+  (let [file (tempfile "pizza" ".owl")]
+	  (is (not (.exists file)))
+	  (save-ontology (load-pizza) file)
+	  (is (.exists file))
+	)
 )
 
 (deftest save-pizza-turtle
-  (def file (doto (File/createTempFile "pizza" ".owl") (.delete) ))
-  (is (not (.exists file)))
-  (save-ontology (load-pizza) file :turtle)
-  (is (.exists file))
+  (let [file (tempfile "pizza" ".owl")]
+	  (is (not (.exists file)))
+	  (save-ontology (load-pizza) file :owlxml)
+	  (is (.exists file))
+  )
 )
 
 

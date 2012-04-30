@@ -55,5 +55,5 @@
 	([[ontology manager :as ont-man] file save-format]
 		(let [save-format (owl-format save-format)]
 			(copy-prefixes ont-man save-format)
-			(.saveOntology manager ontology (as-iri file)))))
+			(.saveOntology manager ontology save-format (as-iri file)))))
 
