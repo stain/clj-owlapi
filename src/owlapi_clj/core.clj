@@ -57,3 +57,6 @@
 			(copy-prefixes ont-man save-format)
 			(.saveOntology manager ontology save-format (as-iri file)))))
 
+(defn classes [[ontology & ignore]]
+	(.getClassesInSignature ontology))
+

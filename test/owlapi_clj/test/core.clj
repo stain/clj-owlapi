@@ -53,3 +53,7 @@
 		  (is (not (.exists file)))
 		  (save-ontology (load-pizza) file f)
 		  (is (.exists file)))))
+
+(deftest all-classes
+	(is (< 5
+	    (count (map str (classes (load-pizza)))))))
