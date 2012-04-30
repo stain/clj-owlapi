@@ -47,4 +47,9 @@
 (deftest copy-prefix-owl-turtle
 	(copy-prefixes (load-pizza) (owl-format :turtle)))
 
-
+(deftest all-formats
+  (doseq [f (keys owl-format)]
+	  (let [file (tempfile "pizza" ".owl")]
+		  (is (not (.exists file)))
+		  (save-ontology (load-pizza) file f)
+		  (is (.exists file)))))
