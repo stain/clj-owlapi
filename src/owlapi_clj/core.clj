@@ -1,4 +1,5 @@
 (ns owlapi-clj.core
+  (:require clojure.java.io)
   (:import 
      (org.semanticweb.owlapi.apibinding OWLManager)
      (org.semanticweb.owlapi.model IRI)
@@ -36,7 +37,7 @@
 	(.getOntologyDocumentIRI manager ontology))
 
 (defn as-iri [file]
-	(IRI/create (.toURI file)))
+	(IRI/create (.toURI (clojure.java.io/file file))))
 
 (defn ontology-format [[ontology manager]]
 	(.getOntologyFormat manager ontology))
