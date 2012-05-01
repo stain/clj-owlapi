@@ -3,8 +3,11 @@
   (:use [clojure.test])
   (:import (java.io File)))
 
+; "http://www.co-ode.org/ontologies/pizza/pizza.owl"
+(def pizza (clojure.java.io/resource "pizza.owl"))
+
 (defn load-pizza 
-	[] (load-ontology "http://www.co-ode.org/ontologies/pizza/pizza.owl"))
+	[] (load-ontology pizza))
 
 (defn tempfile [pre post]
   (doto (File/createTempFile pre post) 
@@ -16,7 +19,7 @@
   (is (load-pizza)))
 
 (deftest pizza-doc-uri
-  (is (= "http://www.co-ode.org/ontologies/pizza/pizza.owl") 
+  (is (= pizza) 
      (ontology-document-uri (load-pizza))))
  
 (deftest formats
@@ -55,5 +58,6 @@
 		  (is (.exists file)))))
 
 (deftest all-classes
-	(is (< 5
+	(is (= 100
 	    (count (map str (classes (load-pizza)))))))
+
