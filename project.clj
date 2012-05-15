@@ -6,4 +6,6 @@
                  [net.sourceforge.owlapi/owlapi "3.2.4"]
 
                 ]
+  :repositories {"owlapi-clj" "http://stain.github.com/owlapi-clj/repository/"}
+
 )
