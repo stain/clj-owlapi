@@ -7,7 +7,9 @@
 (def pizza (clojure.java.io/resource "pizza.owl"))
 
 (defn load-pizza 
-	[] (load-ontology pizza))
+	[] 
+  (is (not (nil? pizza)))
+  (load-ontology pizza))
 
 (defn tempfile [pre post]
   (doto (File/createTempFile pre post) 
