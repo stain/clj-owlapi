@@ -13,3 +13,4 @@
 /.nrepl-port
 /.project
 /.settings
+.lein-repl-history
