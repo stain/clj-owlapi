@@ -1,10 +1,16 @@
 (ns owlapi-clj.test.core
   (:use [owlapi-clj.core])
   (:use [clojure.test])
-  (:import (java.io File)))
+  (:use [clojure.java.io])
+  (:import (java.util.logging LogManager)
+           (java.io File)))
 
 ; "http://www.co-ode.org/ontologies/pizza/pizza.owl"
 (def pizza (clojure.java.io/resource "pizza.owl"))
+
+(defn load-logging-properties []
+  (with-open [props (input-stream (resource "logging.properties"))]    
+    (.readConfiguration (LogManager/getLogManager) props)))
 
 (defn load-pizza 
 	[] 
@@ -53,6 +59,8 @@
 	(copy-prefixes (load-pizza) (owl-format :turtle)))
 
 (deftest all-formats
+    ;; To avoid excessive logging from testing :obo serialization
+  (load-logging-properties)
   (doseq [f (keys owl-format)]
 	  (let [file (tempfile "pizza" ".owl")]
 		  (is (not (.exists file)))
