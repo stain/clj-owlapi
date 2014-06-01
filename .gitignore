@@ -8,3 +8,8 @@
 /.lein-deps-sum
 *.swp
 /target
+/bin
+/.classpath
+/.nrepl-port
+/.project
+/.settings
