@@ -1,5 +1,7 @@
 ## owlapi-clj
 
+[![Build Status](https://travis-ci.org/stain/owlapi-clj.svg)](https://travis-ci.org/stain/owlapi-clj)
+
 An early attempt to provide [Clojure](http://clojure.org/) bindings for the
 [OWL-API](http://owlapi.sourceforge.net/).  
 
