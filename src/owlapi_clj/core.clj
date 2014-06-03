@@ -2,11 +2,15 @@
   (:require clojure.java.io)
   (:import 
      (org.semanticweb.owlapi.apibinding OWLManager)
-     (org.semanticweb.owlapi.model IRI)
-  )
+     (org.semanticweb.owlapi.model IRI 
+              OWLOntologyAlreadyExistsException OWLOntologyRenameException))
 )
 
-(defn owl-manager [] (OWLManager/createOWLOntologyManager))
+
+(defn owl-manager [] 
+   (OWLManager/createOWLOntologyManager))
+
+(def ^:dynamic *owl-manager* (owl-manager))
 
 (def owl-format
   ^{:doc "Known ontology formats supported by OWLAPI, ie. subclasses of OWLOntologyFormat" }
@@ -30,38 +34,44 @@
     :turtle (org.coode.owlapi.turtle.TurtleOntologyFormat.)
 })
 	
-(defn load-ontology 
-	([uri] (load-ontology uri (owl-manager)))
-	([uri manager] [(.loadOntologyFromOntologyDocument manager (IRI/create uri)) manager]))
+(defn load-ontology [uri] 
+  (let [iri (IRI/create uri)]
+    (or (first (.getOntologyIDsByVersion *owl-manager* iri))
+        (first (.getOntology *owl-manager* iri))
+        (try
+          (.loadOntologyFromOntologyDocument *owl-manager* iri)
+        (catch OWLOntologyAlreadyExistsException e
+          (.getOntology *owl-manager* (.getOntologyID e)))
+        (catch OWLOntologyRenameException e
+          (.getOntology *owl-manager* (.getOntologyID e)))))))
 
-(defn remove-ontology! [[ontology manager]]
-	(.removeOntology manager ontology))
+(defn remove-ontology! [ontology]
+	(.removeOntology *owl-manager* ontology))
 
-(defn ontology-document-uri [[ontology manager]]
-	(.getOntologyDocumentIRI manager ontology))
+(defn ontology-document-uri [ontology]
+	(.getOntologyDocumentIRI *owl-manager* ontology))
 
 (defn as-iri [file]
 	(IRI/create (.toURI (clojure.java.io/file file))))
 
-(defn ontology-format [[ontology manager]]
-	(.getOntologyFormat manager ontology))
+(defn ontology-format [ontology]
+	(.getOntologyFormat *owl-manager* ontology))
 
 
-(defn copy-prefixes [ontology-manager new-format]
-	(let [old-format (ontology-format ontology-manager)]
+(defn copy-prefixes [ontology new-format]
+	(let [old-format (ontology-format ontology)]
 		(if (and (.isPrefixOWLOntologyFormat new-format)
 		         (.isPrefixOWLOntologyFormat old-format))
 			(.copyPrefixesFrom new-format old-format))))	
-			
 
 (defn save-ontology 
-	([[ontology manager] file] 
-		(.saveOntology manager ontology (as-iri file)))
-	([[ontology manager :as ont-man] file save-format]
+	([ontology file] 
+		(.saveOntology *owl-manager* ontology (as-iri file)))
+	([ontology file save-format]
 		(let [save-format (owl-format save-format)]
-			(copy-prefixes ont-man save-format)
-			(.saveOntology manager ontology save-format (as-iri file)))))
+			(copy-prefixes ontology save-format)
+			(.saveOntology *owl-manager* ontology save-format (as-iri file)))))
 
-(defn classes [[ontology & ignore]]
+(defn classes [ontology]
 	(.getClassesInSignature ontology))
 
