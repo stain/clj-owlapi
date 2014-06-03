@@ -75,3 +75,6 @@
 (defn classes [ontology]
 	(.getClassesInSignature ontology))
 
+(defn object-properties [ontology]
+  (.getObjectPropertiesInSignature ontology))
+
