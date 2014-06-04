@@ -2,7 +2,7 @@
   (:require clojure.java.io)
   (:import 
      (org.semanticweb.owlapi.apibinding OWLManager)
-     (org.semanticweb.owlapi.model IRI 
+     (org.semanticweb.owlapi.model IRI OWLOntology
               OWLOntologyAlreadyExistsException OWLOntologyRenameException))
 )
 
@@ -48,6 +48,9 @@
 (defn remove-ontology! [ontology]
 	(.removeOntology *owl-manager* ontology))
 
+(defn loaded-ontologies [] 
+  (.getOntologies *owl-manager*))
+
 (defn ontology-document-uri [ontology]
 	(.getOntologyDocumentIRI *owl-manager* ontology))
 
@@ -57,6 +60,11 @@
 (defn ontology-format [ontology]
 	(.getOntologyFormat *owl-manager* ontology))
 
+(defn prefixes [ontology]
+  (let [format (ontology-format ontology)]
+    (if (.isPrefixOWLOntologyFormat format)
+      (.getPrefixName2PrefixMap format)
+      {})))
 
 (defn copy-prefixes [ontology new-format]
 	(let [old-format (ontology-format ontology)]
@@ -78,3 +86,10 @@
 (defn object-properties [ontology]
   (.getObjectPropertiesInSignature ontology))
 
+(defn data-properties [ontology]
+  (.getDataPropertiesInSignature ontology))
+
+
+(defn ranges-of-property [property]
+  (.getRanges property (loaded-ontologies)))
+    
