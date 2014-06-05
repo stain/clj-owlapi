@@ -60,6 +60,9 @@
 (defn ontology-document-uri [ontology]
 	(.getOntologyDocumentIRI *owl-manager* ontology))
 
+(defn create-iri [iri]
+  (IRI/create iri))
+
 (defn as-iri [file]
 	(IRI/create (.toURI (clojure.java.io/file file))))
 
@@ -95,13 +98,15 @@
 (defn data-properties [ontology]
   (.getDataPropertiesInSignature ontology))
 
+(defn annotation-properties [ontology]
+  (.getAnnotationPropertiesInSignature ontology))
 
 (defn ranges-of-property [property]
   (.getRanges property (loaded-ontologies)))
     
 (defn annotations 
   ([entity]
-    (set (mapcat #(.getAnnotations % entity) (loaded-ontologies))))
+    (set (mapcat #(.getAnnotations entity %) (loaded-ontologies))))
   ([entity annotation]
-    (set (mapcat #(.getAnnotations % entity annotation) (loaded-ontologies)))))
+    (set (mapcat #(.getAnnotations entity % annotation) (loaded-ontologies)))))
 
