@@ -1,5 +1,5 @@
-(ns owlapi-clj.test.core
-  (:use [owlapi-clj.core])
+(ns owlapi.test.core
+  (:use [owlapi.core])
   (:use [clojure.test])
   (:use [clojure.java.io])
   (:import (java.util.logging LogManager)

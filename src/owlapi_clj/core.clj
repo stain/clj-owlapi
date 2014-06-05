@@ -1,4 +1,4 @@
-(ns owlapi-clj.core
+(ns owlapi.core
   (:require clojure.java.io)
   (:import 
      (org.semanticweb.owlapi.apibinding OWLManager)
