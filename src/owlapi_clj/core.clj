@@ -12,6 +12,12 @@
 
 (def ^:dynamic *owl-manager* (owl-manager))
 
+(defn data-factory []
+  (.getOWLDataFactory *owl-manager*))
+
+(defn owl-types []
+  (bean (data-factory)))
+
 (def owl-format
   ^{:doc "Known ontology formats supported by OWLAPI, ie. subclasses of OWLOntologyFormat" }
  {
@@ -93,3 +99,9 @@
 (defn ranges-of-property [property]
   (.getRanges property (loaded-ontologies)))
     
+(defn annotations 
+  ([entity]
+    (set (mapcat #(.getAnnotations % entity) (loaded-ontologies))))
+  ([entity annotation]
+    (set (mapcat #(.getAnnotations % entity annotation) (loaded-ontologies)))))
+
