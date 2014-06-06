@@ -71,20 +71,37 @@
 	(is (= 100
 	    (count (map str (classes (load-pizza)))))))
 
-(deftest test-with-owl
-  (with-owl 
+(deftest test-clear-all
+  (with-owl
     (is (empty? (loaded-ontologies)))
-    (with-owl ; even nested
-      (load-pizza)
-      (is (not-empty (loaded-ontologies)))
-    )
-    (is (empty? (loaded-ontologies)))))
+    (load-pizza)
+    (is (not-empty (loaded-ontologies)))
+    (clear-ontologies!)
+    (is (empty? (loaded-ontologies)))                   
+))
+
+(deftest test-with-owl
+  (is (= 
+	  (with-owl 
+	    (is (empty? (loaded-ontologies)))
+	    (is (= 
+		    (with-owl ; even nested
+		      (load-pizza)
+		      (is (not-empty (loaded-ontologies)))
+		      :inner ; Ensure last value is returned from nested with-owl
+		    ) :inner))
+	    (is (empty? (loaded-ontologies)))
+	     :outer ; Ensure last value is returned from with-owl
+	    ) :outer)))
 
 (deftest test-with-owl-manager
   (let [man (owl-manager)]
-    (with-owl-manager man 
-      (is (empty? (loaded-ontologies)))
-      (load-pizza))
+    (is (=
+	    (with-owl-manager man 
+	      (is (empty? (loaded-ontologies)))
+	      (load-pizza)
+	      :return
+      ) :return))
     (with-owl-manager man
         (is (not-empty (loaded-ontologies))))))
     

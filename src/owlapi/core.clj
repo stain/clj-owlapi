@@ -17,7 +17,10 @@
      ~@body))
 
 (defmacro with-owl [& body]
-  `(with-owl-manager (owl-manager) ~@body))
+  `(let [result# (with-owl-manager 
+                   (owl-manager) ~@body)]
+       (clear-ontologies!)  
+        result#))
 
 (defn data-factory []
   (.getOWLDataFactory *owl-manager*))
@@ -63,6 +66,10 @@
 
 (defn loaded-ontologies [] 
   (.getOntologies *owl-manager*))
+
+(defn clear-ontologies! []
+  (doseq [ont (loaded-ontologies)]
+    (remove-ontology! ont)))
 
 (defn ontology-document-uri [ontology]
 	(.getOntologyDocumentIRI *owl-manager* ontology))
