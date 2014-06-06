@@ -1,7 +1,6 @@
 ## clj-owlapi
 
-[![Build Status](https://travis-ci.org/stain/clj-owlapi.svg)](https://travis-ci.org/stain/clj-owlapi) \
-[![doi:10.5281/zenodo.10330](https://zenodo.org/badge/doi/10.5281/zenodo.10330.png)](http://dx.doi.org/10.5281/zenodo.10330)
+[![Build Status](https://travis-ci.org/stain/clj-owlapi.svg)](https://travis-ci.org/stain/clj-owlapi) [![doi:10.5281/zenodo.10330](https://zenodo.org/badge/doi/10.5281/zenodo.10330.png)](http://dx.doi.org/10.5281/zenodo.10330)
 
 An early attempt to provide [Clojure](http://clojure.org/) bindings for the
 [OWL-API](http://owlapi.sourceforge.net/).  
