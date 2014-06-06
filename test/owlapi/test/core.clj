@@ -79,6 +79,14 @@
       (is (not-empty (loaded-ontologies)))
     )
     (is (empty? (loaded-ontologies)))))
+
+(deftest test-with-owl-manager
+  (let [man (owl-manager)]
+    (with-owl-manager man 
+      (is (empty? (loaded-ontologies)))
+      (load-pizza))
+    (with-owl-manager man
+        (is (not-empty (loaded-ontologies))))))
     
     
   
