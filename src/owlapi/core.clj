@@ -17,10 +17,15 @@
      ~@body))
 
 (defmacro with-owl [& body]
-  `(let [result# (with-owl-manager 
-                   (owl-manager) ~@body)]
-       (clear-ontologies!)  
-        result#))
+  `(with-owl-manager (owl-manager) 
+     (try            
+        ~@body
+     (finally
+         (clear-ontologies!)))))
+;  `(let [result# (with-owl-manager 
+;                   (owl-manager) ~@body)]
+;       (clear-ontologies!)  
+;        result#))
 
 (defn data-factory []
   (.getOWLDataFactory *owl-manager*))

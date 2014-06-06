@@ -81,18 +81,28 @@
 ))
 
 (deftest test-with-owl
-  (is (= 
-	  (with-owl 
-	    (is (empty? (loaded-ontologies)))
-	    (is (= 
-		    (with-owl ; even nested
-		      (load-pizza)
-		      (is (not-empty (loaded-ontologies)))
-		      :inner ; Ensure last value is returned from nested with-owl
-		    ) :inner))
-	    (is (empty? (loaded-ontologies)))
-	     :outer ; Ensure last value is returned from with-owl
-	    ) :outer)))
+    (is (= 
+	    (with-owl 
+        
+	      (is (empty? (loaded-ontologies)))
+	      (with-local-vars [manager nil] 
+	         (is (= 
+			        (with-owl ; even nested
+                (var-set manager *owl-manager*)
+			          (load-pizza)
+			          (is (not-empty (loaded-ontologies)))
+                (with-owl-manager @manager 
+                  (is (not-empty (loaded-ontologies))))
+                ;; Ensure with-owl-manager did NOT clear the manager
+                (is (not-empty (loaded-ontologies)))
+			          :inner ; Ensure last value is returned from nested with-owl
+			        ) :inner))
+            (with-owl-manager @manager
+                  ; Ensure that with-owl cleared the manager
+                  (is (empty? (loaded-ontologies)))))
+	      (is (empty? (loaded-ontologies)))
+	       :outer ; Ensure last value is returned from with-owl
+	      ) :outer)))
 
 (deftest test-with-owl-manager
   (let [man (owl-manager)]
