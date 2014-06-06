@@ -1,4 +1,4 @@
-(defproject clj-owlapi "0.2.0-SNAPSHOT"
+(defproject clj-owlapi "0.2.0"
   :description "OWL API wrapper for Clojure"
   :url "https://github.com/stain/clj-owlapi"  
   :dependencies [
