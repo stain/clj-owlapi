@@ -10,7 +10,15 @@
 (defn owl-manager [] 
    (OWLManager/createOWLOntologyManager))
 
-(def ^:dynamic *owl-manager* (owl-manager))
+
+;; must be set with with-owl or with-owl-manager
+(def ^:dynamic *owl-manager*) 
+
+(defn- -owl-manager- []
+  (if (bound? (var *owl-manager*)) *owl-manager*
+    (throw (RuntimeException. "*owl-manager* not bound. Did you use (with-owl) or (with-owl-manager)?"))))
+
+
 
 (defmacro with-owl-manager [manager & body]
   `(binding [*owl-manager* ~manager]
@@ -27,8 +35,9 @@
 ;       (clear-ontologies!)  
 ;        result#))
 
+
 (defn data-factory []
-  (.getOWLDataFactory *owl-manager*))
+  (.getOWLDataFactory (-owl-manager-)))
 
 (defn owl-types []
   (bean (data-factory)))
@@ -57,27 +66,27 @@
 	
 (defn load-ontology [uri] 
   (let [iri (IRI/create uri)]
-    (or (first (.getOntologyIDsByVersion *owl-manager* iri))
-        (first (.getOntology *owl-manager* iri))
+    (or (first (.getOntologyIDsByVersion (-owl-manager-) iri))
+        (first (.getOntology (-owl-manager-) iri))
         (try
-          (.loadOntologyFromOntologyDocument *owl-manager* iri)
+          (.loadOntologyFromOntologyDocument (-owl-manager-) iri)
         (catch OWLOntologyAlreadyExistsException e
-          (.getOntology *owl-manager* (.getOntologyID e)))
+          (.getOntology (-owl-manager-) (.getOntologyID e)))
         (catch OWLOntologyRenameException e
-          (.getOntology *owl-manager* (.getOntologyID e)))))))
+          (.getOntology (-owl-manager-) (.getOntologyID e)))))))
 
 (defn remove-ontology! [ontology]
-	(.removeOntology *owl-manager* ontology))
+	(.removeOntology (-owl-manager-) ontology))
 
 (defn loaded-ontologies [] 
-  (.getOntologies *owl-manager*))
+  (.getOntologies (-owl-manager-)))
 
 (defn clear-ontologies! []
   (doseq [ont (loaded-ontologies)]
     (remove-ontology! ont)))
 
 (defn ontology-document-uri [ontology]
-	(.getOntologyDocumentIRI *owl-manager* ontology))
+	(.getOntologyDocumentIRI (-owl-manager-) ontology))
 
 (defn create-iri [iri]
   (IRI/create iri))
@@ -86,7 +95,7 @@
 	(IRI/create (.toURI (clojure.java.io/file file))))
 
 (defn ontology-format [ontology]
-	(.getOntologyFormat *owl-manager* ontology))
+	(.getOntologyFormat (-owl-manager-) ontology))
 
 (defn prefixes [ontology]
   (let [format (ontology-format ontology)]
@@ -102,11 +111,11 @@
 
 (defn save-ontology 
 	([ontology file] 
-		(.saveOntology *owl-manager* ontology (as-iri file)))
+		(.saveOntology (-owl-manager-) ontology (as-iri file)))
 	([ontology file save-format]
 		(let [save-format (owl-format save-format)]
 			(copy-prefixes ontology save-format)
-			(.saveOntology *owl-manager* ontology save-format (as-iri file)))))
+			(.saveOntology (-owl-manager-) ontology save-format (as-iri file)))))
 
 (defn classes [ontology]
 	(.getClassesInSignature ontology))

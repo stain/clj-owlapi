@@ -23,12 +23,15 @@
 	(.deleteOnExit)
 ))
 
+
 (deftest load-pizza-owl
-  (is (load-pizza)))
+  (with-owl
+    (is (load-pizza))))
 
 (deftest pizza-doc-uri
-  (is (= pizza) 
-     (ontology-document-uri (load-pizza))))
+	(with-owl
+	  (is (= pizza) 
+	     (ontology-document-uri (load-pizza)))))
  
 (deftest formats
 	(is (= (org.semanticweb.owlapi.io.RDFXMLOntologyFormat.) (owl-format :rdfxml)))
@@ -36,49 +39,50 @@
 )
 
 (deftest load-then-remove-pizza-owl
-  (is (not (remove-ontology! (load-pizza)))))
+	(with-owl  
+	  (is (not (remove-ontology! (load-pizza))))))
 
 (deftest save-pizza
-  (let [file (tempfile "pizza" ".owl")]
-	  (is (not (.exists file)))
-	  (save-ontology (load-pizza) file)
-	  (is (.exists file))
-	)
-)
+	(with-owl  
+	  (let [file (tempfile "pizza" ".owl")]
+		  (is (not (.exists file)))
+		  (save-ontology (load-pizza) file)
+		  (is (.exists file)))))
 
 (deftest save-pizza-turtle
-  (let [file (tempfile "pizza" ".owl")]
-	  (is (not (.exists file)))
-	  (save-ontology (load-pizza) file :owlxml)
-	  (is (.exists file))
-  )
-)
+	(with-owl  
+	  (let [file (tempfile "pizza" ".owl")]
+		  (is (not (.exists file)))
+		  (save-ontology (load-pizza) file :owlxml)
+		  (is (.exists file)))))
 
 
 (deftest copy-prefix-owl-turtle
-	(copy-prefixes (load-pizza) (owl-format :turtle)))
+	(with-owl  
+   (copy-prefixes (load-pizza) (owl-format :turtle))))
 
 (deftest all-formats
     ;; To avoid excessive logging from testing :obo serialization
   (load-logging-properties)
   (doseq [f (keys owl-format)]
-	  (let [file (tempfile "pizza" ".owl")]
-		  (is (not (.exists file)))
-		  (save-ontology (load-pizza) file f)
-		  (is (.exists file)))))
+	(with-owl  
+    (let [file (tempfile "pizza" ".owl")]
+		   (is (not (.exists file)))
+		   (save-ontology (load-pizza) file f)
+		   (is (.exists file))))))
 
 (deftest all-classes
-	(is (= 100
-	    (count (map str (classes (load-pizza)))))))
+	(with-owl  
+	  (is (= 100
+		     (count (map str (classes (load-pizza))))))))
 
 (deftest test-clear-all
   (with-owl
-    (is (empty? (loaded-ontologies)))
-    (load-pizza)
-    (is (not-empty (loaded-ontologies)))
-    (clear-ontologies!)
-    (is (empty? (loaded-ontologies)))                   
-))
+   (is (empty? (loaded-ontologies)))
+   (load-pizza)
+   (is (not-empty (loaded-ontologies)))
+   (clear-ontologies!)
+   (is (empty? (loaded-ontologies)))))
 
 (deftest test-with-owl
     (is (= 
