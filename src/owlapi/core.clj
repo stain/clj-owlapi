@@ -12,6 +12,10 @@
 
 (def ^:dynamic *owl-manager* (owl-manager))
 
+(defmacro with-owl [& body]
+  `(binding [*owl-manager* (owl-manager)]
+     ~@body))
+
 (defn data-factory []
   (.getOWLDataFactory *owl-manager*))
 

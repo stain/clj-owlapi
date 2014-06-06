@@ -71,3 +71,14 @@
 	(is (= 100
 	    (count (map str (classes (load-pizza)))))))
 
+(deftest test-with-owl
+  (with-owl 
+    (is (empty? (loaded-ontologies)))
+    (with-owl ; even nested
+      (load-pizza)
+      (is (not-empty (loaded-ontologies)))
+    )
+    (is (empty? (loaded-ontologies)))))
+    
+    
+  
