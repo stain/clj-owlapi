@@ -3,12 +3,17 @@
   (:import 
      (org.semanticweb.owlapi.apibinding OWLManager)
      (org.semanticweb.owlapi.model IRI OWLOntology
-              OWLOntologyAlreadyExistsException OWLOntologyRenameException))
+              OWLOntologyAlreadyExistsException OWLOntologyRenameException)
+     (no.s11.owlapijsonld JsonLdOntologyFormat JsonLdStorer JsonLdParserFactory)
+    )
 )
 
+(JsonLdParserFactory/register)
 
 (defn owl-manager [] 
-   (OWLManager/createOWLOntologyManager))
+   (let [manager (OWLManager/createOWLOntologyManager)]
+     (JsonLdStorer/register manager)
+     manager))
 
 
 ;; must be set with with-owl or with-owl-manager
@@ -62,6 +67,7 @@
     ;:labelfunctional (org.obolibrary.owl.LabelFunctionalFormat.)
     :default (org.semanticweb.owlapi.io.DefaultOntologyFormat.)
     :turtle (org.coode.owlapi.turtle.TurtleOntologyFormat.)
+    :jsonld (JsonLdOntologyFormat.)
 })
 	
 (defn load-ontology [uri] 
