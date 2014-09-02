@@ -1,6 +1,6 @@
 (ns owlapi.core
   (:require clojure.java.io)
-  (:import 
+  (:import
      (org.semanticweb.owlapi.apibinding OWLManager)
      (org.semanticweb.owlapi.model IRI OWLOntology
               OWLOntologyAlreadyExistsException OWLOntologyRenameException)
@@ -10,14 +10,14 @@
 
 (JsonLdParserFactory/register)
 
-(defn owl-manager [] 
+(defn owl-manager []
    (let [manager (OWLManager/createOWLOntologyManager)]
      (JsonLdStorer/register manager)
      manager))
 
 
 ;; must be set with with-owl or with-owl-manager
-(def ^:dynamic *owl-manager*) 
+(def ^:dynamic *owl-manager*)
 
 (defn- -owl-manager- []
   (if (bound? (var *owl-manager*)) *owl-manager*
@@ -30,14 +30,14 @@
      ~@body))
 
 (defmacro with-owl [& body]
-  `(with-owl-manager (owl-manager) 
-     (try            
+  `(with-owl-manager (owl-manager)
+     (try
         ~@body
      (finally
          (clear-ontologies!)))))
-;  `(let [result# (with-owl-manager 
+;  `(let [result# (with-owl-manager
 ;                   (owl-manager) ~@body)]
-;       (clear-ontologies!)  
+;       (clear-ontologies!)
 ;        result#))
 
 
@@ -51,7 +51,7 @@
   ^{:doc "Known ontology formats supported by OWLAPI, ie. subclasses of OWLOntologyFormat" }
  {
   ;; Commented out entries fail to find a serializer (might need additional classpath bindings)
-  
+
     ;:dl-html (uk.ac.manchester.cs.owlapi.dlsyntax.DLSyntaxHTMLOntologyFormat.)
     ;:dl (uk.ac.manchester.cs.owlapi.dlsyntax.DLSyntaxOntologyFormat.)
     :krss2 (de.uulm.ecs.ai.owlapi.krssparser.KRSS2OntologyFormat.)
@@ -69,11 +69,11 @@
     :turtle (org.coode.owlapi.turtle.TurtleOntologyFormat.)
     :jsonld (JsonLdOntologyFormat.)
 })
-	
-(defn load-ontology [uri] 
+
+(defn load-ontology [uri]
   (let [iri (IRI/create uri)]
     (or (first (.getOntologyIDsByVersion (-owl-manager-) iri))
-        (first (.getOntology (-owl-manager-) iri))
+        (.getOntology (-owl-manager-) iri)
         (try
           (.loadOntologyFromOntologyDocument (-owl-manager-) iri)
         (catch OWLOntologyAlreadyExistsException e
@@ -84,7 +84,7 @@
 (defn remove-ontology! [ontology]
 	(.removeOntology (-owl-manager-) ontology))
 
-(defn loaded-ontologies [] 
+(defn loaded-ontologies []
   (.getOntologies (-owl-manager-)))
 
 (defn clear-ontologies! []
@@ -113,10 +113,10 @@
 	(let [old-format (ontology-format ontology)]
 		(if (and (.isPrefixOWLOntologyFormat new-format)
 		         (.isPrefixOWLOntologyFormat old-format))
-			(.copyPrefixesFrom new-format old-format))))	
+			(.copyPrefixesFrom new-format old-format))))
 
-(defn save-ontology 
-	([ontology file] 
+(defn save-ontology
+	([ontology file]
 		(.saveOntology (-owl-manager-) ontology (as-iri file)))
 	([ontology file save-format]
 		(let [save-format (owl-format save-format)]
@@ -137,10 +137,9 @@
 
 (defn ranges-of-property [property]
   (.getRanges property (loaded-ontologies)))
-    
-(defn annotations 
+
+(defn annotations
   ([entity]
     (set (mapcat #(.getAnnotations entity %) (loaded-ontologies))))
   ([entity annotation]
     (set (mapcat #(.getAnnotations entity % annotation) (loaded-ontologies)))))
-

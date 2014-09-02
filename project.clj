@@ -1,6 +1,6 @@
-(defproject clj-owlapi "0.3.0"
+(defproject clj-owlapi "0.3.1-SNAPSHOT"
   :description "OWL API wrapper for Clojure"
-  :url "https://github.com/stain/clj-owlapi"  
+  :url "https://github.com/stain/clj-owlapi"
   :dependencies [
                  [org.clojure/clojure "1.6.0"]
 ;                 [org.clojure/clojure-contrib "1.6.0"]
