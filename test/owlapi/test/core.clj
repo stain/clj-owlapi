@@ -9,18 +9,18 @@
 (def pizza (clojure.java.io/resource "pizza.owl"))
 
 (defn load-logging-properties []
-  (with-open [props (input-stream (resource "logging.properties"))]    
+  (with-open [props (input-stream (resource "logging.properties"))]
     (.readConfiguration (LogManager/getLogManager) props)))
 
-(defn load-pizza 
-	[] 
+(defn load-pizza
+	[]
   (is (not (nil? pizza)))
   (load-ontology pizza))
 
 (defn tempfile [pre post]
-  (doto (File/createTempFile pre post) 
-	(.delete) 
-	;(.deleteOnExit)
+  (doto (File/createTempFile pre post)
+	(.delete)
+	(.deleteOnExit)
 ))
 
 
@@ -30,27 +30,27 @@
 
 (deftest pizza-doc-uri
 	(with-owl
-	  (is (= pizza) 
+	  (is (= pizza)
 	     (ontology-document-uri (load-pizza)))))
- 
+
 (deftest formats
 	(is (= (org.semanticweb.owlapi.io.RDFXMLOntologyFormat.) (owl-format :rdfxml)))
 	(is (= (org.semanticweb.owlapi.io.OWLXMLOntologyFormat.) (owl-format :owlxml)))
 )
 
 (deftest load-then-remove-pizza-owl
-	(with-owl  
+	(with-owl
 	  (is (not (remove-ontology! (load-pizza))))))
 
 (deftest save-pizza
-	(with-owl  
+	(with-owl
 	  (let [file (tempfile "pizza" ".owl")]
 		  (is (not (.exists file)))
 		  (save-ontology (load-pizza) file)
 		  (is (.exists file)))))
 
 (deftest save-pizza-turtle
-	(with-owl  
+	(with-owl
 	  (let [file (tempfile "pizza" ".owl")]
 		  (is (not (.exists file)))
 		  (save-ontology (load-pizza) file :owlxml)
@@ -58,22 +58,21 @@
 
 
 (deftest copy-prefix-owl-turtle
-	(with-owl  
+	(with-owl
    (copy-prefixes (load-pizza) (owl-format :turtle))))
 
 (deftest all-formats
     ;; To avoid excessive logging from testing :obo serialization
   (load-logging-properties)
   (doseq [f (keys owl-format)]
-	(with-owl  
+	(with-owl
     (let [file (tempfile "pizza" ".owl")]
 		   (is (not (.exists file)))
 		   (save-ontology (load-pizza) file f)
-       (println file f)
 		   (is (.exists file))))))
 
 (deftest all-classes
-	(with-owl  
+	(with-owl
 	  (is (= 100
 		     (count (map str (classes (load-pizza))))))))
 
@@ -86,17 +85,17 @@
    (is (empty? (loaded-ontologies)))))
 
 (deftest test-with-owl
-    (is (= 
-	    (with-owl 
-        
+    (is (=
+	    (with-owl
+
 	      (is (empty? (loaded-ontologies)))
-	      (with-local-vars [manager nil] 
-	         (is (= 
+	      (with-local-vars [manager nil]
+	         (is (=
 			        (with-owl ; even nested
                 (var-set manager *owl-manager*)
 			          (load-pizza)
 			          (is (not-empty (loaded-ontologies)))
-                (with-owl-manager @manager 
+                (with-owl-manager @manager
                   (is (not-empty (loaded-ontologies))))
                 ;; Ensure with-owl-manager did NOT clear the manager
                 (is (not-empty (loaded-ontologies)))
@@ -112,13 +111,10 @@
 (deftest test-with-owl-manager
   (let [man (owl-manager)]
     (is (=
-	    (with-owl-manager man 
+	    (with-owl-manager man
 	      (is (empty? (loaded-ontologies)))
 	      (load-pizza)
 	      :return
       ) :return))
     (with-owl-manager man
         (is (not-empty (loaded-ontologies))))))
-    
-    
-  
