@@ -103,6 +103,12 @@
 (defn ontology-format [ontology]
 	(.getOntologyFormat (-owl-manager-) ontology))
 
+(defn prefix-for-iri [iri ontology]
+  (let [format (ontology-format ontology)]
+    (if (.isPrefixOWLOntologyFormat format)
+      (.getPrefixIRI format iri)
+      nil)))
+
 (defn prefixes [ontology]
   (let [format (ontology-format ontology)]
     (if (.isPrefixOWLOntologyFormat format)
