@@ -20,7 +20,7 @@
 (defn tempfile [pre post]
   (doto (File/createTempFile pre post) 
 	(.delete) 
-	(.deleteOnExit)
+	;(.deleteOnExit)
 ))
 
 
@@ -69,6 +69,7 @@
     (let [file (tempfile "pizza" ".owl")]
 		   (is (not (.exists file)))
 		   (save-ontology (load-pizza) file f)
+       (println file f)
 		   (is (.exists file))))))
 
 (deftest all-classes
