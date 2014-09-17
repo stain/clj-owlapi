@@ -148,7 +148,7 @@
   ([entity]
     (set 
       (if (instance? OWLOntology entity)
-        (set #(.getAnnotations entity))
+        (set (.getAnnotations entity))
         (mapcat #(.getAnnotations entity %) (loaded-ontologies)))))
         
   ([entity annotation]
