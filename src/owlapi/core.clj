@@ -146,6 +146,10 @@
 
 (defn annotations
   ([entity]
-    (set (mapcat #(.getAnnotations entity %) (loaded-ontologies))))
+    (set 
+      (if (instance? OWLOntology entity)
+        (set #(.getAnnotations entity))
+        (mapcat #(.getAnnotations entity %) (loaded-ontologies)))))
+        
   ([entity annotation]
     (set (mapcat #(.getAnnotations entity % annotation) (loaded-ontologies)))))
