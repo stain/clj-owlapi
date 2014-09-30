@@ -48,6 +48,10 @@
   (is (= "application/ld+json") (media-type :jsonld))
 )
 
+(deftest mediatype-keys-in-formats
+  (every? (set (keys owl-format)) (keys media-type)))
+
+
 (deftest test-extensions
   (is (= ".rdf" (extension :rdfxml)))
   (is (= ".ttl" (extension :turtle)))
@@ -58,6 +62,9 @@
   (is (= ".tex" (extension :latex)))
   (is (= ".obo" (extension :obo))) ; TODO: Confirm
 )
+
+(deftest extension-keys-in-formats
+  (every? (set (keys owl-format)) (keys extension)))
 
 (deftest load-then-remove-pizza-owl
 	(with-owl
