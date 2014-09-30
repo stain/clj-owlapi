@@ -70,7 +70,7 @@
     :jsonld (JsonLdOntologyFormat.)
 })
 
-(def mime-types {
+(def media-type {
   :rdfxml "application/rdf+xml"
   :turtle "text/turtle"
   :manchester "text/owl-manchester"
@@ -79,7 +79,7 @@
   :functional "text/owl-functional"
 })
 
-(def extensions {
+(def extension {
   :rdfxml ".rdf"
   :turtle ".ttl"
   :manchester ".omn"
