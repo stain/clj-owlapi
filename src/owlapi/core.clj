@@ -70,6 +70,26 @@
     :jsonld (JsonLdOntologyFormat.)
 })
 
+(def mime-types {
+  :rdfxml "application/rdf+xml"
+  :turtle "text/turtle"
+  :manchester "text/owl-manchester"
+  :jsonld "application/ld+json"
+  :owlxml "application/owl+xml"
+  :functional "text/owl-functional"
+})
+
+(def extensions {
+  :rdfxml ".rdf"
+  :turtle ".ttl"
+  :manchester ".omn"
+  :jsonld ".jsonld"
+  :owlxml ".owx"
+  :functional ".ofn"
+  :latex ".tex"
+  :obo ".obo"
+ })
+
 (defn load-ontology [uri]
   (let [iri (IRI/create uri)]
     (or (first (.getOntologyIDsByVersion (-owl-manager-) iri))
@@ -146,10 +166,10 @@
 
 (defn annotations
   ([entity]
-    (set 
+    (set
       (if (instance? OWLOntology entity)
         (set (.getAnnotations entity))
         (mapcat #(.getAnnotations entity %) (loaded-ontologies)))))
-        
+
   ([entity annotation]
     (set (mapcat #(.getAnnotations entity % annotation) (loaded-ontologies)))))
