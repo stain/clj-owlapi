@@ -36,6 +36,27 @@
 (deftest formats
 	(is (= (org.semanticweb.owlapi.io.RDFXMLOntologyFormat.) (owl-format :rdfxml)))
 	(is (= (org.semanticweb.owlapi.io.OWLXMLOntologyFormat.) (owl-format :owlxml)))
+  ; ...
+)
+
+(deftest test-mediatype
+  (is (= "application/rdf+xml") (media-type :rdfxml))
+  (is (= "text/turtle") (media-type :turtle))
+  (is (= "application/owl+xml") (media-type :owlxml))
+  (is (= "text/owl-manchester") (media-type :manchester))
+  (is (= "text/owl-functional") (media-type :functional))
+  (is (= "application/ld+json") (media-type :jsonld))
+)
+
+(deftest test-extensions
+  (is (= ".rdf" (extension :rdfxml)))
+  (is (= ".ttl" (extension :turtle)))
+  (is (= ".owx" (extension :owlxml)))
+  (is (= ".omn" (extension :manchester)))
+  (is (= ".ofn" (extension :functional)))
+  (is (= ".jsonld" (extension :jsonld)))
+  (is (= ".tex" (extension :latex)))
+  (is (= ".obo" (extension :obo))) ; TODO: Confirm
 )
 
 (deftest load-then-remove-pizza-owl
@@ -60,6 +81,12 @@
 (deftest copy-prefix-owl-turtle
 	(with-owl
    (copy-prefixes (load-pizza) (owl-format :turtle))))
+
+(deftest test-prefix-for-iri
+  (with-owl
+   (= "pizza" (prefix-for-iri
+     (create-iri "http://www.co-ode.org/ontologies/pizza/pizza.owl#Pizza")
+     (load-pizza)))))
 
 (deftest all-formats
     ;; To avoid excessive logging from testing :obo serialization
@@ -118,23 +145,3 @@
       ) :return))
     (with-owl-manager man
         (is (not-empty (loaded-ontologies))))))
-
-(deftest test-mediatype
-  (is (= "application/rdf+xml") (media-type :rdfxml))
-  (is (= "text/turtle") (media-type :turtle))
-  (is (= "application/owl+xml") (media-type :owlxml))
-  (is (= "text/owl-manchester") (media-type :manchester))
-  (is (= "text/owl-functional") (media-type :functional))
-  (is (= "application/ld+json") (media-type :jsonld))
-)
-
-(deftest test-extensions
-  (is (= ".rdf" (extension :rdfxml)))
-  (is (= ".ttl" (extension :turtle)))
-  (is (= ".owx" (extension :owlxml)))
-  (is (= ".omn" (extension :manchester)))
-  (is (= ".ofn" (extension :functional)))
-  (is (= ".jsonld" (extension :jsonld)))
-  (is (= ".tex" (extension :latex)))
-  (is (= ".obo" (extension :obo))) ; TODO: Confirm
-)
