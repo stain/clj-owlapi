@@ -1,5 +1,6 @@
 (ns owlapi.core
   (:require clojure.java.io)
+  (:require clojure.set)
   (:import
      (org.semanticweb.owlapi.apibinding OWLManager)
      (org.semanticweb.owlapi.model IRI OWLOntology
@@ -79,6 +80,8 @@
   :functional "text/owl-functional"
 })
 
+(def format-of-media-type (clojure.set/map-invert media-type))
+
 (def extension {
   :rdfxml ".rdf"
   :turtle ".ttl"
@@ -89,6 +92,8 @@
   :latex ".tex"
   :obo ".obo"
  })
+
+(def format-of-extension (clojure.set/map-invert extension))
 
 (defn load-ontology [uri]
   (let [iri (IRI/create uri)]

@@ -46,11 +46,19 @@
   (is (= "text/owl-manchester") (media-type :manchester))
   (is (= "text/owl-functional") (media-type :functional))
   (is (= "application/ld+json") (media-type :jsonld))
+  (is (nil? (media-type :obo))) ; unknown
+  (is (nil? (media-type :madeOneUp)))
 )
 
 (deftest mediatype-keys-in-formats
   (every? (set (keys owl-format)) (keys media-type)))
 
+(deftest test-format-of-mediatype
+  (is (= :turtle (format-of-media-type "text/turtle")))
+  (is (= :rdfxml (format-of-media-type "application/rdf+xml")))
+  ; ...
+  (is (nil? (format-of-media-type "application/octet-stream")))
+)
 
 (deftest test-extensions
   (is (= ".rdf" (extension :rdfxml)))
@@ -62,6 +70,13 @@
   (is (= ".tex" (extension :latex)))
   (is (= ".obo" (extension :obo))) ; TODO: Confirm
 )
+
+(deftest test-format-of-extension
+  (is (= :rdfxml (format-of-extension ".rdf")))
+  (is (= :turtle (format-of-extension ".ttl")))
+  ; ...
+  (is (nil? (format-of-extension ".txt")))
+  )
 
 (deftest extension-keys-in-formats
   (every? (set (keys owl-format)) (keys extension)))
