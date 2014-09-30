@@ -118,3 +118,23 @@
       ) :return))
     (with-owl-manager man
         (is (not-empty (loaded-ontologies))))))
+
+(deftest test-mediatype
+  (is (= "application/rdf+xml") (media-type :rdfxml))
+  (is (= "text/turtle") (media-type :turtle))
+  (is (= "application/owl+xml") (media-type :owlxml))
+  (is (= "text/owl-manchester") (media-type :manchester))
+  (is (= "text/owl-functional") (media-type :functional))
+  (is (= "application/ld+json") (media-type :jsonld))
+)
+
+(deftest test-extensions
+  (is (= ".rdf" (extension :rdfxml)))
+  (is (= ".ttl" (extension :turtle)))
+  (is (= ".owx" (extension :owlxml)))
+  (is (= ".omn" (extension :manchester)))
+  (is (= ".ofn" (extension :functional)))
+  (is (= ".jsonld" (extension :jsonld)))
+  (is (= ".tex" (extension :latex)))
+  (is (= ".obo" (extension :obo))) ; TODO: Confirm
+)
