@@ -157,6 +157,9 @@
 (defn classes [ontology]
 	(.getClassesInSignature ontology))
 
+(defn individuals [ontology]
+  (.getIndividualsInSignature ontology))
+
 (defn object-properties [ontology]
   (.getObjectPropertiesInSignature ontology))
 

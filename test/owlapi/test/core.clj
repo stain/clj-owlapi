@@ -125,6 +125,11 @@
 	  (is (= 100
 		     (count (map str (classes (load-pizza))))))))
 
+(deftest all-individuals
+  (with-owl
+    (is (= 5
+          (count (map str (individuals (load-pizza))))))))
+
 (deftest test-clear-all
   (with-owl
    (is (empty? (loaded-ontologies)))
